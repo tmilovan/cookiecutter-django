@@ -32,13 +32,19 @@ argon2-cffi==16.3.0
 # Well-built with regular release cycles!
 django-allauth==0.31.0
 
-{% if cookiecutter.windows == 'y' -%}
-# On Windows, you must download/install psycopg2 manually
-# from http://www.lfd.uci.edu/~gohlke/pythonlibs/#psycopg
-{% else %}
-# Python-PostgreSQL Database Adapter
-psycopg2==2.7.1
+{% if cookiecutter.database_engine == "mysql" -%}
+PyMySQL==0.7.11
 {%- endif %}
+{% if cookiecutter.database_engine == "mysql" -%}
+    {% if cookiecutter.windows == 'y' -%}
+    # On Windows, you must download/install psycopg2 manually
+    # from http://www.lfd.uci.edu/~gohlke/pythonlibs/#psycopg
+    {% else %}
+    # Python-PostgreSQL Database Adapter
+    psycopg2==2.7.1
+    {%- endif %}
+{%- endif %}
+
 
 # Unicode slugification
 awesome-slugify==1.6.5
@@ -57,6 +63,12 @@ celery==3.1.24
 {% if cookiecutter.use_compressor == "y" %}
 rcssmin==1.0.6 {% if cookiecutter.windows == 'y' %}--install-option="--without-c-extensions"{% endif %}
 django-compressor==2.1.1
+{% endif %}
+
+{% if cookiecutter.use_django_cms == "y" %}
+django-cms==3.4.2
+django-filer==1.2.7
+djangocms-text-ckeditor==3.4.0
 {% endif %}
 
 # Your custom requirements go here

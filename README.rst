@@ -1,3 +1,22 @@
+Cookiecutter Django with MySQL and Django CMS support
+=======================
+A fork of Cookiecutter Django with additional support for MySQL and Django CMS
+
+Install with::
+
+    $ virtualenv your_project_name
+    $ source your_project_name/bin/activate
+    $ pip install "cookiecutter>=1.4.0"
+    $ cookiecutter git@github.com:tmilovan/cookiecutter-django-mysql-django_cms.git
+    $ cd your_project_name
+    $ pip install -r requirements/local.txt
+    Create your database
+    Edit database settings in ./config/settings/local.py
+    $ python manage.py migrate
+    $ python manege.py runserver
+
+
+
 Cookiecutter Django
 =======================
 
@@ -45,6 +64,7 @@ Features
 * Instructions for deploying to PythonAnywhere_
 * Run tests with unittest or py.test
 * Customizable PostgreSQL version
+* Support for Mysql via mysql-python
 * Experimental support for Amazon Elastic Beanstalk
 
 .. _`maintained Foundation fork`: https://github.com/Parbhat/cookiecutter-django-foundation
@@ -82,8 +102,8 @@ Constraints
 -----------
 
 * Only maintained 3rd party libraries are used.
-* Uses PostgreSQL everywhere (9.2+)
-* Environment variables for configuration (This won't work with Apache/mod_wsgi except on AWS ELB).
+* <del>Uses PostgreSQL everywhere (9.2+)</del>
+* Environment variables for configuration (This won't work with Apache/mod_wsgi).
 
 
 Usage
@@ -98,7 +118,8 @@ First, get Cookiecutter. Trust me, it's awesome::
 
 Now run it against this repo::
 
-    $ cookiecutter https://github.com/pydanny/cookiecutter-django
+    <del>$ cookiecutter https://github.com/pydanny/cookiecutter-django</del>
+    $ cookiecutter git@github.com:tmilovan/cookiecutter-django-mysql-django_cms.git
 
 You'll be prompted for some values. Provide them, then a Django project will be created for you.
 

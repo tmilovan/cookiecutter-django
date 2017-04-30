@@ -9,6 +9,11 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
 
+{% if cookiecutter.database_engine == "mysql" -%}
+import pymysql
+pymysql.install_as_MySQLdb()
+{%- endif %}
+
 ROOT_DIR = environ.Path(__file__) - 3  # ({{ cookiecutter.project_slug }}/config/settings/base.py - 3 = {{ cookiecutter.project_slug }}/)
 APPS_DIR = ROOT_DIR.path('{{ cookiecutter.project_slug }}')
 
@@ -16,7 +21,7 @@ APPS_DIR = ROOT_DIR.path('{{ cookiecutter.project_slug }}')
 env = environ.Env()
 
 # .env file, should load only in development environment
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
+READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=True)
 
 if READ_DOT_ENV_FILE:
     # Operating System Environment variables have precedence over variables defined in the .env file,
@@ -42,6 +47,9 @@ DJANGO_APPS = [
     # 'django.contrib.humanize',
 
     # Admin
+{% if cookiecutter.use_django_cms == "y" %}
+    'djangocms_admin_style',
+{% endif %}
     'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
@@ -49,12 +57,39 @@ THIRD_PARTY_APPS = [
     'allauth',  # registration
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
+{% if cookiecutter.use_django_cms == "y" %}
+    'sekizai',
+    'menus',
+    'treebeard',
+    'filer',
+    'easy_thumbnails',
+    'mptt',
+
+
+    # Below are Django cms plugins, if you wish to use them do:
+    # 'pip install djangocms-link djangocms-file djangocms-picture djangocms-video djangocms-googlemap djangocms-snippet djangocms-style djangocms-column'
+    # and uncomment them below then migrate
+
+    # 'djangocms_link',
+    # 'djangocms_file',
+    # 'djangocms_picture',
+    # 'djangocms_video',
+    # 'djangocms_googlemap',
+    # 'djangocms_snippet',
+    # 'djangocms_style',
+    # 'djangocms_column',
+{% endif %}
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
     # custom users app
     '{{ cookiecutter.project_slug }}.users.apps.UsersConfig',
+{% if cookiecutter.use_django_cms == "y" %}
+    # django cms has to go here because of local user app
+    'cms',
+    'djangocms_text_ckeditor',
+{% endif %}
     # Your stuff: custom apps go here
 ]
 
@@ -71,6 +106,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+{% if cookiecutter.use_django_cms == "y" %}
+    'django.middleware.locale.LocaleMiddleware',
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
+    'cms.middleware.utils.ApphookReloadMiddleware',
+{% endif %}
 ]
 
 # MIGRATIONS CONFIGURATION
@@ -109,11 +152,20 @@ MANAGERS = ADMINS
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
+{% if cookiecutter.database_engine == "mysql" %}
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+{% else %}
     'default': env.db('DATABASE_URL', default='postgres://{% if cookiecutter.windows == 'y' %}localhost{% endif %}/{{cookiecutter.project_slug}}'),
+{% endif %}
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
-
-
 # GENERAL CONFIGURATION
 # ------------------------------------------------------------------------------
 # Local time zone for this installation. Choices can be found here:
@@ -123,7 +175,7 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 TIME_ZONE = '{{ cookiecutter.timezone }}'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
@@ -135,7 +187,7 @@ USE_I18N = True
 USE_L10N = True
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
-USE_TZ = True
+USE_TZ = False
 
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -167,6 +219,10 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+            {% if cookiecutter.use_django_cms == "y" %}
+                'sekizai.context_processors.sekizai',
+                'cms.context_processors.cms_settings',
+            {% endif %}
                 # Your stuff: custom template context processors go here
             ],
         },
@@ -208,7 +264,8 @@ MEDIA_URL = '/media/'
 ROOT_URLCONF = 'config.urls'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-WSGI_APPLICATION = 'config.wsgi.application'
+# wsgi moved to priject root because of uwsgi emperor mode requirement
+WSGI_APPLICATION = 'wsgi.application'
 
 # PASSWORD STORAGE SETTINGS
 # ------------------------------------------------------------------------------
@@ -285,5 +342,26 @@ STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 # Location of root django.contrib.admin URL, use {% raw %}{% url 'admin:index' %}{% endraw %}
 ADMIN_URL = r'^admin/'
 
+{% if cookiecutter.use_django_cms == "y" %}
+# Django CMS
+LANGUAGES = [
+    ('en', 'English'),
+    ('de', 'German'),
+]
+
+CMS_TEMPLATES = [
+    ('cmshome.html', 'Home page template'),
+]
+
+THUMBNAIL_HIGH_RESOLUTION = True
+
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters'
+)
+
+{% endif %}
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
