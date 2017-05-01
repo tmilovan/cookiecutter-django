@@ -64,7 +64,7 @@ Features
 * Instructions for deploying to PythonAnywhere_
 * Run tests with unittest or py.test
 * Customizable PostgreSQL version
-* Support for Mysql via mysql-python
+* Support for Mysql via pymysql
 * Experimental support for Amazon Elastic Beanstalk
 
 .. _`maintained Foundation fork`: https://github.com/Parbhat/cookiecutter-django-foundation
