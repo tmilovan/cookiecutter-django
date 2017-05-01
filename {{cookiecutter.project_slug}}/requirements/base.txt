@@ -23,14 +23,14 @@ django-crispy-forms==1.6.1
 django-model-utils==3.0.0
 
 # Images
-Pillow==4.1.0
+Pillow==4.1.1
 
 # Password storage
 argon2-cffi==16.3.0
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
-django-allauth==0.31.0
+django-allauth==0.32.0
 
 {% if cookiecutter.database_engine == "mysql" -%}
 PyMySQL==0.7.11
@@ -53,7 +53,7 @@ awesome-slugify==1.6.5
 pytz==2017.2
 
 # Redis support
-django-redis==4.7.0
+django-redis==4.8.0
 redis>=2.10.5
 
 {% if cookiecutter.use_celery == "y" %}
