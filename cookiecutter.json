@@ -19,7 +19,7 @@
     "use_elasticbeanstalk_experimental": "n",
     "use_compressor": "y",
     "database_engine": ["mysql", "postgres"],
-    "postgresql_version": ["postgres9.6", "postgres9.5", "postgres9.4", "postgres9.3", "postgres9.2"],
+    "postgresql_version": ["No postgres","postgres9.6", "postgres9.5", "postgres9.4", "postgres9.3", "postgres9.2"],
     "js_task_runner": ["Gulp", "Grunt", "None"],
     "use_lets_encrypt": "n",
     "use_django_cms": "y",
