@@ -7,7 +7,7 @@ Install with::
     $ virtualenv your_project_name
     $ source your_project_name/bin/activate
     $ pip install "cookiecutter>=1.4.0"
-    $ cookiecutter git@github.com:tmilovan/cookiecutter-django-mysql-django_cms.git
+    $ cookiecutter https://github.com/tmilovan/cookiecutter-django-mysql-django_cms.git
     $ cd your_project_name
     $ pip install -r requirements/local.txt
     Create your database
@@ -119,7 +119,7 @@ First, get Cookiecutter. Trust me, it's awesome::
 Now run it against this repo::
 
     <del>$ cookiecutter https://github.com/pydanny/cookiecutter-django</del>
-    $ cookiecutter git@github.com:tmilovan/cookiecutter-django-mysql-django_cms.git
+    $ cookiecutter https://github.com/tmilovan/cookiecutter-django-mysql-django_cms.git
 
 You'll be prompted for some values. Provide them, then a Django project will be created for you.
 
