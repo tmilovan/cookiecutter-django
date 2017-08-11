@@ -23,7 +23,7 @@ django-crispy-forms==1.6.1
 django-model-utils==3.0.0
 
 # Images
-Pillow==4.1.1
+Pillow==4.2.1
 
 # Password storage
 argon2-cffi==16.3.0
@@ -32,17 +32,16 @@ argon2-cffi==16.3.0
 # Well-built with regular release cycles!
 django-allauth==0.32.0
 
+
 {% if cookiecutter.database_engine == "mysql" -%}
-PyMySQL==0.7.11
-{%- endif %}
-{% if cookiecutter.database_engine == "mysql" -%}
-    {% if cookiecutter.windows == 'y' -%}
-    # On Windows, you must download/install psycopg2 manually
-    # from http://www.lfd.uci.edu/~gohlke/pythonlibs/#psycopg
-    {% else %}
-    # Python-PostgreSQL Database Adapter
-    psycopg2==2.7.1
-    {%- endif %}
+	PyMySQL==0.7.11
+	{% if cookiecutter.windows == 'y' -%}
+		# On Windows, you must download/install psycopg2 manually
+		# from http://www.lfd.uci.edu/~gohlke/pythonlibs/#psycopg
+		{% else %}
+		# Python-PostgreSQL Database Adapter
+		psycopg2==2.7.3
+	{%- endif %}
 {%- endif %}
 
 

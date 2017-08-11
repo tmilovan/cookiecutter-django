@@ -56,8 +56,10 @@ Listed in alphabetical order.
   Areski Belaid            `@areski`_
   Ashley Camba
   Barclay Gauld            `@yunti`_
+  Ben Warren               `@bwarren2`
   Ben Lopatin
   Benjamin Abel
+  Bert de Miranda          `@bertdemiranda`_
   Bo Lopker                `@blopker`_
   Bouke Haarsma
   Brent Payne              `@brentpayne`_               @brentpayne
@@ -86,6 +88,7 @@ Listed in alphabetical order.
   Felipe Arruda            `@arruda`_
   Garry Cairns             `@garry-cairns`_
   Garry Polley             `@garrypolley`_
+  Hamish Durkin            `@durkode`_
   Harry Percival           `@hjwp`_
   Henrique G. G. Pereira   `@ikkebr`_
   Ian Lee                  `@IanLee1521`_
@@ -177,6 +180,7 @@ Listed in alphabetical order.
 .. _@dhepper: https://github.com/dhepper
 .. _@dot2dotseurat: https://github.com/dot2dotseurat
 .. _@dsclementsen: https://github.com/dsclementsen
+.. _@durkode: https://github.com/durkode
 .. _@epileptic-fish: https://gihub.com/epileptic-fish
 .. _@eraldo: https://github.com/eraldo
 .. _@eriol: https://github.com/eriol
