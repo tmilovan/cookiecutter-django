@@ -11,11 +11,14 @@ Production Configurations
 - Use opbeat for error reporting
 {% endif %}
 """
+from __future__ import absolute_import, unicode_literals
 
-from boto.s3.connection import OrdinaryCallingFormat
-{% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
-import logging
-{% endif %}
+from django.utils import six
+
+# from boto.s3.connection import OrdinaryCallingFormat
+# {% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
+# import logging
+# {% endif %}
 
 from .base import *  # noqa
 
@@ -30,32 +33,34 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # properly on Heroku.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-{%- if cookiecutter.use_sentry_for_error_reporting == 'y' %}
-# raven sentry client
-# See https://docs.sentry.io/clients/python/integrations/django/
-INSTALLED_APPS += ['raven.contrib.django.raven_compat', ]
-{% endif %}
-{%- if cookiecutter.use_whitenoise == 'y' %}
-# Use Whitenoise to serve static files
-# See: https://whitenoise.readthedocs.io/
-WHITENOISE_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware', ]
-MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
-{% endif %}
-{%- if cookiecutter.use_sentry_for_error_reporting == 'y' -%}
-RAVEN_MIDDLEWARE = ['raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware']
-MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
-{% endif %}
-{%- if cookiecutter.use_opbeat == 'y' -%}
-# opbeat integration
-# See https://opbeat.com/languages/django/
-INSTALLED_APPS += ['opbeat.contrib.django', ]
-OPBEAT = {
-    'ORGANIZATION_ID': env('DJANGO_OPBEAT_ORGANIZATION_ID'),
-    'APP_ID': env('DJANGO_OPBEAT_APP_ID'),
-    'SECRET_TOKEN': env('DJANGO_OPBEAT_SECRET_TOKEN')
-}
-MIDDLEWARE = ['opbeat.contrib.django.middleware.OpbeatAPMMiddleware', ] + MIDDLEWARE
-{% endif %}
+
+# {%- if cookiecutter.use_sentry_for_error_reporting == 'y' %}
+# # raven sentry client
+# # See https://docs.sentry.io/clients/python/integrations/django/
+# INSTALLED_APPS += ['raven.contrib.django.raven_compat', ]
+# {% endif %}
+# {%- if cookiecutter.use_whitenoise == 'y' %}
+# # Use Whitenoise to serve static files
+# # See: https://whitenoise.readthedocs.io/
+# WHITENOISE_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware', ]
+# MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
+# {% endif %}
+# {%- if cookiecutter.use_sentry_for_error_reporting == 'y' -%}
+# RAVEN_MIDDLEWARE = ['raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware']
+# MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
+# {% endif %}
+# {%- if cookiecutter.use_opbeat == 'y' -%}
+# # opbeat integration
+# # See https://opbeat.com/languages/django/
+# INSTALLED_APPS += ['opbeat.contrib.django', ]
+# OPBEAT = {
+#     'ORGANIZATION_ID': env('DJANGO_OPBEAT_ORGANIZATION_ID'),
+#     'APP_ID': env('DJANGO_OPBEAT_APP_ID'),
+#     'SECRET_TOKEN': env('DJANGO_OPBEAT_SECRET_TOKEN')
+# }
+# MIDDLEWARE = ['opbeat.contrib.django.middleware.OpbeatAPMMiddleware', ] + MIDDLEWARE
+# {% endif %}
+
 
 # SECURITY CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -113,9 +118,9 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['{{cookiecutter.domain
 
 # URL that handles the media served from MEDIA_ROOT, used for managing
 # stored files.
-{% if cookiecutter.use_whitenoise == 'y' -%}
-MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
-# {% else %}
+
+# {% if cookiecutter.use_whitenoise == 'y' -%}
+# MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
 # #  See:http://stackoverflow.com/questions/10390244/
 # from storages.backends.s3boto import S3BotoStorage
 # StaticRootS3BotoStorage = lambda: S3BotoStorage(location='static')
@@ -123,13 +128,13 @@ MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
 # DEFAULT_FILE_STORAGE = 'config.settings.production.MediaRootS3BotoStorage'
 #
 # MEDIA_URL = 'https://s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
-{%- endif %}
+# {%- endif %}
 
 # Static Assets
 # ------------------------
-{% if cookiecutter.use_whitenoise == 'y' -%}
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# {% else %}
+
+# {% if cookiecutter.use_whitenoise == 'y' -%}
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # STATIC_URL = 'https://s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
 # STATICFILES_STORAGE = 'config.settings.production.StaticRootS3BotoStorage'
 # # See: https://github.com/antonagestam/collectfast
@@ -137,14 +142,14 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # # 'django.contrib.staticfiles'
 # AWS_PRELOAD_METADATA = True
 # INSTALLED_APPS = ['collectfast', ] + INSTALLED_APPS
-{%- endif %}
-{% if cookiecutter.use_compressor == 'y'-%}
+# {%- endif %}
+# {% if cookiecutter.use_compressor == 'y'-%}
 # COMPRESSOR
 # ------------------------------------------------------------------------------
 # COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 COMPRESS_URL = STATIC_URL
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
-{%- endif %}
+# {%- endif %}
 # EMAIL
 # ------------------------------------------------------------------------------
 DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
@@ -171,46 +176,46 @@ SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
-{% if cookiecutter.use_elasticbeanstalk_experimental.lower() == 'y' -%}
-# Uses Amazon RDS for database hosting, which doesn't follow the Heroku-style spec
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('RDS_DB_NAME'),
-        'USER': env('RDS_USERNAME'),
-        'PASSWORD': env('RDS_PASSWORD'),
-        'HOST': env('RDS_HOSTNAME'),
-        'PORT': env('RDS_PORT'),
-    }
-}
-{% else %}
+# {% if cookiecutter.use_elasticbeanstalk_experimental.lower() == 'y' -%}
+# # Uses Amazon RDS for database hosting, which doesn't follow the Heroku-style spec
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': env('RDS_DB_NAME'),
+#         'USER': env('RDS_USERNAME'),
+#         'PASSWORD': env('RDS_PASSWORD'),
+#         'HOST': env('RDS_HOSTNAME'),
+#         'PORT': env('RDS_PORT'),
+#     }
+# }
+# {% else %}
 # Use the Heroku-style specification
 # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-DATABASES = {
+# DATABASES = {
 
-    'default':{
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+#     'default':{
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': env('DATABASE_NAME'),
+#         'USER': env('DATABASE_USER'),
+#         'PASSWORD': env('DATABASE_PASSWORD'),
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
 
-}
-DATABASES['default']['ATOMIC_REQUESTS'] = True
-{%- endif %}
+# }
+# DATABASES['default']['ATOMIC_REQUESTS'] = True
+# {%- endif %}
 
 # CACHING
 # ------------------------------------------------------------------------------
-{% if cookiecutter.use_elasticbeanstalk_experimental.lower() == 'y' -%}
+# {% if cookiecutter.use_elasticbeanstalk_experimental.lower() == 'y' -%}
 # REDIS_LOCATION = 'redis://{}:{}/0'.format(
 #     env('REDIS_ENDPOINT_ADDRESS'),
 #     env('REDIS_PORT')
 # )
 # {% else %}
 # REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL', default='redis://127.0.0.1:6379'), 0)
-{%- endif %}
+# {%- endif %}
 # Heroku URL does not pass the DB number, so we parse it in
 # CACHES = {
 #     'default': {
@@ -224,63 +229,63 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 #     }
 # }
 
-{% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
-# Sentry Configuration
-SENTRY_DSN = env('DJANGO_SENTRY_DSN')
-SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT', default='raven.contrib.django.raven_compat.DjangoClient')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry', ],
-    },
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
-        },
-    },
-    'handlers': {
-        'sentry': {
-            'level': 'ERROR',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console', ],
-            'propagate': False,
-        },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console', ],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console', ],
-            'propagate': False,
-        },
-        'django.security.DisallowedHost': {
-            'level': 'ERROR',
-            'handlers': ['console', 'sentry', ],
-            'propagate': False,
-        },
-    },
-}
-SENTRY_CELERY_LOGLEVEL = env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
-RAVEN_CONFIG = {
-    'CELERY_LOGLEVEL': env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO),
-    'DSN': SENTRY_DSN
-}
-{% elif cookiecutter.use_sentry_for_error_reporting == 'n' %}
+# {% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
+# # Sentry Configuration
+# SENTRY_DSN = env('DJANGO_SENTRY_DSN')
+# SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT', default='raven.contrib.django.raven_compat.DjangoClient')
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'root': {
+#         'level': 'WARNING',
+#         'handlers': ['sentry', ],
+#     },
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(levelname)s %(asctime)s %(module)s '
+#                       '%(process)d %(thread)d %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'sentry': {
+#             'level': 'ERROR',
+#             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose'
+#         }
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'level': 'ERROR',
+#             'handlers': ['console', ],
+#             'propagate': False,
+#         },
+#         'raven': {
+#             'level': 'DEBUG',
+#             'handlers': ['console', ],
+#             'propagate': False,
+#         },
+#         'sentry.errors': {
+#             'level': 'DEBUG',
+#             'handlers': ['console', ],
+#             'propagate': False,
+#         },
+#         'django.security.DisallowedHost': {
+#             'level': 'ERROR',
+#             'handlers': ['console', 'sentry', ],
+#             'propagate': False,
+#         },
+#     },
+# }
+# SENTRY_CELERY_LOGLEVEL = env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
+# RAVEN_CONFIG = {
+#     'CELERY_LOGLEVEL': env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO),
+#     'DSN': SENTRY_DSN
+# }
+# {% elif cookiecutter.use_sentry_for_error_reporting == 'n' %}
 # LOGGING CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
@@ -328,8 +333,8 @@ LOGGING = {
         }
     }
 }
-{% endif %}
-# Custom Admin URL, use {% raw %}{% url 'admin:index' %}{% endraw %}
+# {% endif %}
+# Custom Admin URL, use {% url 'admin:index' %}
 ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
