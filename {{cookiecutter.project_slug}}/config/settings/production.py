@@ -1,7 +1,9 @@
 """
 Production Configurations
 
-- Use Amazon's S3 for storing static files and uploaded media
+{% if cookiecutter.use_whitenoise == 'y' -%}
+- Use WhiteNoise for serving static files{% endif %}
+- Use Amazon's S3 for {% if cookiecutter.use_whitenoise == 'n' -%}storing static files {% endif %}and uploaded media
 - Use mailgun to send emails
 - Use Redis for cache
 {% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
@@ -13,12 +15,14 @@ Production Configurations
 """
 from __future__ import absolute_import, unicode_literals
 
+
 from django.utils import six
 
 # from boto.s3.connection import OrdinaryCallingFormat
 # {% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
 # import logging
 # {% endif %}
+
 
 from .base import *  # noqa
 
@@ -79,7 +83,7 @@ SESSION_COOKIE_HTTPONLY = True
 SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
-X_FRAME_OPTIONS = 'DENY'
+X_FRAME_OPTIONS = 'ALLOW'
 
 # SITE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -104,6 +108,7 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['{{cookiecutter.domain
 #AWS_AUTO_CREATE_BUCKET = True
 #AWS_QUERYSTRING_AUTH = False
 #AWS_S3_CALLING_FORMAT = OrdinaryCallingFormat()
+
 
 # AWS cache settings, don't change unless you know what you're doing:
 #AWS_EXPIRY = 60 * 60 * 24 * 7
@@ -146,6 +151,7 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['{{cookiecutter.domain
 # {% if cookiecutter.use_compressor == 'y'-%}
 # COMPRESSOR
 # ------------------------------------------------------------------------------
+
 # COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 COMPRESS_URL = STATIC_URL
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)

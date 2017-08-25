@@ -9,7 +9,7 @@ wheel==0.29.0
 django==1.10.7 # pyup: >=1.10,<1.11
 
 # Configuration
-django-environ==0.4.3
+django-environ==0.4.4
 {% if cookiecutter.use_whitenoise == 'y' -%}
 whitenoise==3.3.0
 {%- endif %}
@@ -30,7 +30,7 @@ argon2-cffi==16.3.0
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
-django-allauth==0.32.0
+django-allauth==0.33.0
 
 
 {% if cookiecutter.database_engine == "mysql" -%}
@@ -61,7 +61,7 @@ celery==3.1.25
 
 {% if cookiecutter.use_compressor == "y" %}
 rcssmin==1.0.6 {% if cookiecutter.windows == 'y' %}--install-option="--without-c-extensions"{% endif %}
-django-compressor==2.1.1
+django-compressor==2.2
 {% endif %}
 
 {% if cookiecutter.use_django_cms == "y" %}
