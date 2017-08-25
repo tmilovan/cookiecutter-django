@@ -1,7 +1,9 @@
 """
 Production Configurations
 
-- Use Amazon's S3 for storing static files and uploaded media
+{% if cookiecutter.use_whitenoise == 'y' -%}
+- Use WhiteNoise for serving static files{% endif %}
+- Use Amazon's S3 for {% if cookiecutter.use_whitenoise == 'n' -%}storing static files {% endif %}and uploaded media
 - Use mailgun to send emails
 - Use Redis for cache
 {% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
@@ -12,7 +14,6 @@ Production Configurations
 {% endif %}
 """
 
-from boto.s3.connection import OrdinaryCallingFormat
 {% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
 import logging
 {% endif %}
@@ -100,6 +101,7 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['{{cookiecutter.domain
 #AWS_QUERYSTRING_AUTH = False
 #AWS_S3_CALLING_FORMAT = OrdinaryCallingFormat()
 
+
 # AWS cache settings, don't change unless you know what you're doing:
 #AWS_EXPIRY = 60 * 60 * 24 * 7
 
@@ -141,6 +143,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 {% if cookiecutter.use_compressor == 'y'-%}
 # COMPRESSOR
 # ------------------------------------------------------------------------------
+
 # COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 COMPRESS_URL = STATIC_URL
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
