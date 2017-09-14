@@ -53,6 +53,7 @@ Listed in alphabetical order.
   Andy Rose
   Anna Callahan            `@jazztpt`_
   Antonia Blair            `@antoniablair`_             @antoniablairart
+  Arcuri Davide            `@dadokkio`_
   Areski Belaid            `@areski`_
   Ashley Camba
   Barclay Gauld            `@yunti`_
@@ -146,6 +147,7 @@ Listed in alphabetical order.
   Travis McNeill           `@Travistock`_               @tavistock_esq
   Vitaly Babiy
   Vivian Guillen           `@viviangb`_
+  Wan Liuyang              `@sfdye`_                    @sfdye
   Will Farley              `@goldhand`_                 @g01dhand
   William Archinal         `@archinal`_
   Yaroslav Halchenko
@@ -223,6 +225,7 @@ Listed in alphabetical order.
 .. _@shireenrao: https://github.com/shireenrao
 .. _@webyneter: https://github.com/webyneter
 .. _@show0k: https://github.com/show0k
+.. _@sfdye: https://github.com/sfdye
 .. _@shultz: https://github.com/shultz
 .. _@siauPatrick: https://github.com/siauPatrick
 .. _@slafs: https://github.com/slafs
