@@ -1,5 +1,5 @@
 """
-Django settings for {{cookiecutter.project_name}} project.
+Base settings for {{cookiecutter.project_name}} project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/dev/topics/settings/
@@ -151,6 +151,8 @@ MANAGERS = ADMINS
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+# Uses django-environ to accept uri format
+# See: https://django-environ.readthedocs.io/en/latest/#supported-types
 DATABASES = {
 {% if cookiecutter.database_engine == "mysql" %}
     'default': {

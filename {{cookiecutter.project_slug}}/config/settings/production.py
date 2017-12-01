@@ -1,5 +1,5 @@
 """
-Production Configurations
+Production settings for {{cookiecutter.project_name}} project.
 
 {% if cookiecutter.use_whitenoise == 'y' -%}
 - Use WhiteNoise for serving static files{% endif %}
@@ -117,6 +117,7 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['{{cookiecutter.domain
 # stored files.
 {% if cookiecutter.use_whitenoise == 'y' -%}
 MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
+<<<<<<< HEAD
 # {% else %}
 # #  See:http://stackoverflow.com/questions/10390244/
 # from storages.backends.s3boto import S3BotoStorage
@@ -125,6 +126,17 @@ MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
 # DEFAULT_FILE_STORAGE = 'config.settings.production.MediaRootS3BotoStorage'
 #
 # MEDIA_URL = 'https://s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
+=======
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+{% else %}
+#  See:http://stackoverflow.com/questions/10390244/
+from storages.backends.s3boto3 import S3Boto3Storage
+StaticRootS3BotoStorage = lambda: S3Boto3Storage(location='static')  # noqa
+MediaRootS3BotoStorage = lambda: S3Boto3Storage(location='media')  # noqa
+DEFAULT_FILE_STORAGE = 'config.settings.production.MediaRootS3BotoStorage'
+
+MEDIA_URL = 'https://s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
+>>>>>>> 2e672856bed0aba3904576104cf7cf746d07897c
 {%- endif %}
 
 # Static Assets
@@ -163,14 +175,17 @@ SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 # }
 # EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
 
+
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See:
 # https://docs.djangoproject.com/en/dev/ref/templates/api/#django.template.loaders.cached.Loader
+
 # TEMPLATES[0]['OPTIONS']['loaders'] = [
 #     ('django.template.loaders.cached.Loader', [
 #         'django.template.loaders.filesystem.Loader', 'django.template.loaders.app_directories.Loader', ]),
 # ]
+#{% set _DEFAULT_CONN_MAX_AGE=60 %}
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -184,6 +199,7 @@ DATABASES = {
         'PASSWORD': env('RDS_PASSWORD'),
         'HOST': env('RDS_HOSTNAME'),
         'PORT': env('RDS_PORT'),
+        'CONN_MAX_AGE': env.int('CONN_MAX_AGE', default={{ _DEFAULT_CONN_MAX_AGE }}),
     }
 }
 {% else %}
@@ -228,62 +244,64 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 # }
 
 {% if cookiecutter.use_sentry_for_error_reporting == 'y' %}
-# Sentry Configuration
-SENTRY_DSN = env('DJANGO_SENTRY_DSN')
-SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT', default='raven.contrib.django.raven_compat.DjangoClient')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry', ],
-    },
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
+    # Sentry Configuration
+    SENTRY_DSN = env('DJANGO_SENTRY_DSN')
+    SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT', default='raven.contrib.django.raven_compat.DjangoClient')
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': True,
+        'root': {
+            'level': 'WARNING',
+            'handlers': ['sentry', ],
         },
-    },
-    'handlers': {
-        'sentry': {
-            'level': 'ERROR',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s '
+                          '%(process)d %(thread)d %(message)s'
+            },
         },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console', ],
-            'propagate': False,
+        'handlers': {
+            'sentry': {
+                'level': 'ERROR',
+                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
+            }
         },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console', ],
-            'propagate': False,
+        'loggers': {
+            'django.db.backends': {
+                'level': 'ERROR',
+                'handlers': ['console', ],
+                'propagate': False,
+            },
+            'raven': {
+                'level': 'DEBUG',
+                'handlers': ['console', ],
+                'propagate': False,
+            },
+            'sentry.errors': {
+                'level': 'DEBUG',
+                'handlers': ['console', ],
+                'propagate': False,
+            },
+            'django.security.DisallowedHost': {
+                'level': 'ERROR',
+                'handlers': ['console', 'sentry', ],
+                'propagate': False,
+            },
         },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console', ],
-            'propagate': False,
-        },
-        'django.security.DisallowedHost': {
-            'level': 'ERROR',
-            'handlers': ['console', 'sentry', ],
-            'propagate': False,
-        },
-    },
-}
-SENTRY_CELERY_LOGLEVEL = env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
-RAVEN_CONFIG = {
-    'CELERY_LOGLEVEL': env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO),
-    'DSN': SENTRY_DSN
-}
+    }
+    SENTRY_CELERY_LOGLEVEL = env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
+    RAVEN_CONFIG = {
+        'CELERY_LOGLEVEL': env.int('DJANGO_SENTRY_LOG_LEVEL', logging.INFO),
+        'DSN': SENTRY_DSN
+    }
+
 {% elif cookiecutter.use_sentry_for_error_reporting == 'n' %}
+
 # LOGGING CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
