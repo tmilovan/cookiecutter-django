@@ -1,5 +1,5 @@
 """
-Production Configurations
+Production settings for {{cookiecutter.project_name}} project.
 
 {% if cookiecutter.use_whitenoise == 'y' -%}
 - Use WhiteNoise for serving static files{% endif %}
@@ -124,8 +124,11 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['{{cookiecutter.domain
 # URL that handles the media served from MEDIA_ROOT, used for managing
 # stored files.
 
+
 # {% if cookiecutter.use_whitenoise == 'y' -%}
 # MEDIA_URL = 'https://s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
+
+# {% else %}
 # #  See:http://stackoverflow.com/questions/10390244/
 # from storages.backends.s3boto import S3BotoStorage
 # StaticRootS3BotoStorage = lambda: S3BotoStorage(location='static')
@@ -134,6 +137,7 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['{{cookiecutter.domain
 #
 # MEDIA_URL = 'https://s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
 # {%- endif %}
+
 
 # Static Assets
 # ------------------------
@@ -171,17 +175,21 @@ SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 # }
 # EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
 
+
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See:
 # https://docs.djangoproject.com/en/dev/ref/templates/api/#django.template.loaders.cached.Loader
+
 # TEMPLATES[0]['OPTIONS']['loaders'] = [
 #     ('django.template.loaders.cached.Loader', [
 #         'django.template.loaders.filesystem.Loader', 'django.template.loaders.app_directories.Loader', ]),
 # ]
+#{% set _DEFAULT_CONN_MAX_AGE=60 %}
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
+
 # {% if cookiecutter.use_elasticbeanstalk_experimental.lower() == 'y' -%}
 # # Uses Amazon RDS for database hosting, which doesn't follow the Heroku-style spec
 # DATABASES = {
@@ -195,6 +203,7 @@ SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 #     }
 # }
 # {% else %}
+
 # Use the Heroku-style specification
 # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
 # DATABASES = {
@@ -292,6 +301,8 @@ SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 #     'DSN': SENTRY_DSN
 # }
 # {% elif cookiecutter.use_sentry_for_error_reporting == 'n' %}
+
+
 # LOGGING CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
